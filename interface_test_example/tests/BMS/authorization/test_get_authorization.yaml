@@ -1,0 +1,27 @@
+config:
+  skip: true
+  baseurl: ${BMS_URL}
+  timeout: 60.0
+  verify_ssl: false
+  headers:
+    Accept: application/json, text/javascript, */*; q=0.01
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: keep-alive
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    cookies: i18n_redirected=en; _ga=GA1.1.2035449644.1756374279; factoryToken=Bearer%20xxxxx
+    X-Requested-With: XMLHttpRequest
+tests:
+  look_inspection_order:
+    description: 获取test999客户端token
+    method: post
+    route: /open/api/v1/xxx
+    RequestData:
+      client_id: 13,
+      client_secret: hpR2HQGHlnPWLFxltvQIXoVj7VY5uuBy5BU8GyW4
+    Validate:
+      expectCode: 200
+    Extract:
+      - test999_token: $.data.token.access_token
+      - token_type: $.data.token.token_type

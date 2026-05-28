@@ -1,0 +1,97 @@
+运行系统需要安装的依赖库：
+```commandline
+pip install -r requirements.txt
+```
+- requirements.txt
+```
+allure-pytest==2.15.0
+allure-python-commons==2.15.0
+atomicwrites==1.4.1
+attrs==25.3.0
+black==24.8.0
+certifi==2025.8.3
+cffi==1.17.1
+charset-normalizer==2.0.12
+click==8.1.8
+colorama==0.4.6
+coloredlogs==15.0.1
+cryptography==45.0.6
+ddddocr==1.5.6
+et-xmlfile==2.0.0
+exceptiongroup==1.3.0
+flatbuffers==25.2.10
+h11==0.16.0
+humanfriendly==10.0
+idna==3.10
+iniconfig==2.1.0
+Jinja2==3.1.6
+jsonpath==0.82.2
+MarkupSafe==2.1.5
+mpmath==1.3.0
+mypy-extensions==1.1.0
+numpy==1.24.4
+onnxruntime==1.19.2
+opencv-python-headless==4.12.0.88
+openpyxl==3.1.5
+outcome==1.3.0.post0
+packaging==25.0
+pandas==2.0.3
+pathspec==0.12.1
+pillow==10.4.0
+platformdirs==4.3.6
+pluggy==1.5.0
+protobuf==5.29.5
+psutil==7.0.0
+py==1.11.0
+pycparser==2.22
+Pygments==2.19.2
+pyOpenSSL==25.1.0
+Pypubsub==4.0.3
+pyreadline3==3.5.4
+PySocks==1.7.1
+pytest==8.3.5
+pytest-assume==2.4.3
+pytest-html==4.1.1
+pytest-metadata==3.1.1
+python-dateutil==2.9.0.post0
+pytz==2025.2
+pywin32==311
+PyYAML==5.4.1
+requests==2.26.0
+robotframework-pythonlibcore==4.4.1
+selenium==4.1.0
+six==1.17.0
+sniffio==1.3.1
+sortedcontainers==2.4.0
+sympy==1.13.3
+toml==0.10.2
+tomli==2.2.1
+trio==0.27.0
+trio-websocket==0.12.2
+typing_extensions==4.13.2
+tzdata==2025.2
+urllib3==1.26.20
+urllib3-secure-extra==0.1.0
+websocket-client==1.8.0
+wsproto==1.2.0
+wxPython==4.2.2
+```
+- 生成allure报告指令
+   pytest -v --alluredir=path
+- 运行指令
+   allure serve path
+- 生成静态文件报告指令
+   allure generate C:\Users\Administrator\Desktop\github\250526\code\interface_test_example\allure-results -o C:\Users\Administrator\Desktop\github\250526\code\interface_test_example\allure-report --clean
+
+  
+
+### 解决 ：CMD 和 PowerShell 可能读取了不同级别的 PATH 变量
+```commandline
+# 重新加载系统 PATH 到当前 PowerShell 会话
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+# 然后测试
+pip list
+pytest --version
+
+```

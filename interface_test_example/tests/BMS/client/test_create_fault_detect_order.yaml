@@ -1,0 +1,95 @@
+config:
+  skip: false
+  baseurl: ${BMS_URL}
+  timeout: 30.0
+  verify_ssl: false
+  headers:
+    Accept: application/json, text/javascript, */*; q=0.01
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: keep-alive
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    authorization: ${BMS_TOKEN_CLIENT}
+variable: {}
+tests:
+  fault_detect_draft_order:
+    description: test999-新建故障检测订单
+    method: POST
+    route: /api/warehouse/addDraftBackOrder
+    RequestData:
+      json:
+        warehouse_id: 1
+        warehouse_name: USCA001
+        country_id: 1
+        name: Chris-test-fault-detect-001
+        address: 1275 York Ave
+        addressLine1: 1275 York Ave
+        addressLine2: ''
+        country_code: US
+        area_code: US
+        zipcode: 10065-6007
+        city: New York
+        phone: '+16507268043'
+        state_code: NY
+        after_sale_type: 1
+        parcels:
+          - packageNum: 1
+            length: 0.029
+            width: 0.029
+            height: 0.029
+            distanceUnit: in
+            weight: 45
+            massUnit: lb
+            packageCode: your_package
+            sku: RP_ModelY||毛豆Y||7||0.029||0.029||0.029||45
+            extra:
+              insurance: 0
+              isCod: false
+              codAmount: 0
+              paymentMethod: any
+              dryIceWeight: 0
+        order_info:
+          - box_num: 0
+            sku: RP_ModelY
+            sku_name: 毛豆Y
+            sku_type_id: '7'
+            num: 1
+            user_note: ''
+            after_sale_type: 1
+        buy_way: Alibaba
+        buy_no: ''
+        buy_time: ''
+        safe_time: ''
+        email: chris.li@besender.com
+        user_note: '1234123'
+        old_sn: ''
+    Validate:
+      expectCode: 200
+    Extract:
+      - 'order_no: $.data.order_no'
+      - "global_order_no: $.data.global_order_no"
+  evaluate_label_return:
+    description: 估价回邮单
+    method: post
+    route: /api/logistics/checkMultiBackScore
+    RequestData:
+      json:
+        order_no: ${order_no}
+    Validate:
+      expectCode: 200
+    Extract:
+      - 'return_label_id: $.data[0].id'
+  purchase_return_label:
+    description: 购买回邮单
+    method: put
+    route: /api/warehouse/submitBackOrder
+    RequestData:
+      json:
+        service_code: fedex_ground
+        service_name: FedEx Ground®
+        return_service_id: ${return_label_id}
+        order_no: ${order_no}
+        isValid: true
+    Validate:
+      expectCode: 200

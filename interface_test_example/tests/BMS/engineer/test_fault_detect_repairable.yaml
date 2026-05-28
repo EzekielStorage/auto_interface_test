@@ -1,0 +1,366 @@
+config:
+  skip: false
+  baseurl: ${BMS_URL}
+  timeout: 30.0
+  verify_ssl: false
+  headers:
+    Accept: application/json, text/javascript, */*; q=0.01
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: keep-alive
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    authorization: ${BMS_TOKEN_ENG}
+variable: {}
+tests:
+  eng_find_repair_order:
+    description: 通用工程师查询订单
+    method: GET
+    route: /api/engineer/afterSale/orderList?page=1&type_arr=1%2C2&express_no=${express_no}&limit=10&timestamp=1765878964012
+    Validate:
+      expectCode: 200
+    Extract:
+      - 'id: $.data[0].id' # 这个id是会变得的
+      - 'old_sn: $.data[0].old_sn'
+  add_engineer_order:
+    description: 通用工程师领单
+    method: POST
+    route: /api/warehouse/afterSale/addEngineerOrder
+    RequestData:
+      json:
+        order_id: ${id}
+        arr:
+          - num: 1
+            engineer_id: 10410
+    Validate:
+      expectCode: 200
+    Extract:
+      - 'order_id: $.data[0]'
+  fault_detect_record_SOP:
+    description: 故障检测-记录SOP
+    method: PUT
+    route: /api/engineer/afterSale/editStepData
+    RequestData:
+      json:
+        order_id: ${order_id}
+        step_code: new_base_info
+        note: null
+        file_path: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251217/154250_1OIP-C.png
+        old_sn: ${old_sn]
+        new_sn: null
+        checked:
+          - fault_id: 263
+            service_type: 1
+            cn_name: 毛豆Y换轮胎
+            en_name: changeTyre
+#          - fault_id: 297
+#            service_type: 1
+#            cn_name: 固定操作：拍摄照片/视频时电池快速耗尽
+#            en_name: 'Fixed Operation: Battery drains fast while taking photos/videos'
+        repair_data:
+          19b252868c824cef519cf277ad5: Scratches
+          19b252868c824cef519cf277ad6: null
+          19b252868c824cef519cf277ad7: null
+          19b2521f1bc24cef519cf277abb: Customers pack by themselves
+          19b252653f324cef519cf277ad2:
+            - No accessories
+            - MC4 cable
+          19b252653f324cef519cf277ad3: xxx
+        field_list:
+          - id: 168
+            template_id: 7
+            type: radio
+            type_name: radio_select
+            parent_type: select
+            title: 外观检查
+            en_title: Appearance inspection
+            field: 19b252868c824cef519cf277ad5
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 88
+                template_id: 7
+                field_id: 168
+                name: 非常崭新
+                en_name: Very new
+                value: Very new
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 89
+                template_id: 7
+                field_id: 168
+                name: 有轻微划痕
+                en_name: Scratches
+                value: Scratches
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 90
+                template_id: 7
+                field_id: 168
+                name: 刮花，磨损严重（需拍照说明）
+                en_name: Severe wear and tear
+                value: Severe wear and tear
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 91
+                template_id: 7
+                field_id: 168
+                name: 完全无法使用（需拍照说明）
+                en_name: Unusable
+                value: Unusable
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 169
+            template_id: 7
+            type: input
+            type_name: single_input
+            parent_type: inputText
+            title: 备注
+            en_title: Remarks
+            field: 19b252868c824cef519cf277ad6
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+          - id: 170
+            template_id: 7
+            type: upload
+            type_name: uploadComponent
+            parent_type: upload
+            title: 照片上传
+            en_title: Upload picture
+            field: 19b252868c824cef519cf277ad7
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+          - id: 171
+            template_id: 7
+            type: radio
+            type_name: radio_select
+            parent_type: select
+            title: 包装类型
+            en_title: Package type
+            field: 19b2521f1bc24cef519cf277abb
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 92
+                template_id: 7
+                field_id: 171
+                name: 原包装
+                en_name: Original packaging
+                value: Original packaging
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 93
+                template_id: 7
+                field_id: 171
+                name: 客户自行包装
+                en_name: Customers pack by themselves
+                value: Customers pack by themselves
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 94
+                template_id: 7
+                field_id: 171
+                name: 裸机
+                en_name: Bare Metal
+                value: Bare Metal
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 95
+                template_id: 7
+                field_id: 171
+                name: 其它（备注说明）
+                en_name: Others (Notes)
+                value: Others (Notes)
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 174
+            template_id: 7
+            type: multiplePicker
+            type_name: multiplePicker
+            parent_type: select
+            title: 包含配件
+            en_title: Included Accessories
+            field: 19b252653f324cef519cf277ad2
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 96
+                template_id: 7
+                field_id: 174
+                name: 标配齐全
+                en_name: Complete standard configuration
+                value: Complete standard configuration
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 97
+                template_id: 7
+                field_id: 174
+                name: 无任何配件
+                en_name: No accessories
+                value: No accessories
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 98
+                template_id: 7
+                field_id: 174
+                name: MC4 cable
+                en_name: MC4 cable
+                value: MC4 cable
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 99
+                template_id: 7
+                field_id: 174
+                name: 车充线
+                en_name: Car charging cable
+                value: Car charging cable
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 100
+                template_id: 7
+                field_id: 174
+                name: 标配XT90航空线
+                en_name: Standard XT90 aviation line
+                value: Standard XT90 aviation line
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 101
+                template_id: 7
+                field_id: 174
+                name: 并机线
+                en_name: Parallel line
+                value: Parallel line
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 102
+                template_id: 7
+                field_id: 174
+                name: 适配器
+                en_name: Adapter
+                value: Adapter
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 103
+                template_id: 7
+                field_id: 174
+                name: AC电源线
+                en_name: AC power cord
+                value: AC power cord
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 175
+            template_id: 7
+            type: input
+            type_name: single_input
+            parent_type: inputText
+            title: 其他配件
+            en_title: 0ther accessories
+            field: 19b252653f324cef519cf277ad3
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+    Validate:
+      expectCode: 200
+  fault_detect_repairable:
+    description: 故障检测-可维修
+    method: PUT
+    route: /api/engineer/afterSale/editStepData
+    RequestData:
+      json:
+        order_id: ${order_id}
+        step_code: testing_result
+        type: 1
+        checked: []
+        note: 测试可维修
+        file_path: ''
+    Validate:
+      expectCode: 200
+  fault_detect_repairable_submit:
+    description: 故障检测-提交
+    method: PUT
+    route: /api/engineer/afterSale/orderSubmit
+    RequestData:
+      json:
+        order_id: ${order_id}
+    Validate:
+      expectCode: 200

@@ -1,0 +1,9 @@
+replace_data:
+  data1:
+    url: /api/warehouse/warehouse/editOrderInfo/
+    json_path_update:
+      - $.confirm_sku_num: 1
+      - $.status: 2
+      - $.order_info[0].confirm_num: 1
+      - $.order_info[0].sn_list:
+          - N2STA1234P6666

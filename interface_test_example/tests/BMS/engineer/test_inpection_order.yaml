@@ -1,0 +1,58 @@
+config:
+  skip: true
+  baseurl: ${BMS_URL}
+  timeout: 30.0
+  verify_ssl: false
+  headers:
+    Accept: application/json, text/javascript, */*; q=0.01
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: keep-alive
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    cookies: i18n_redirected=en; _ga=GA1.1.2035449644.1756374279; factoryToken=Bearer%20xxxxx
+    X-Requested-With: XMLHttpRequest
+    authorization: ${BMS_TOKEN_ENG}
+variable:
+  none: none
+tests:
+  look_inspection_order:
+    description: 查询开箱检测订单
+    method: get
+    route: /api/inspection/order/getInsOrderListPage?page=1&warehouse_id=1&express_no=${express}
+    Validate:
+      expectCode: 200
+      resultCheckJsonpath:
+        - $.data[0].status: 1
+    Extract:
+      - inspection_id: $.data[0].id
+  complete_inspection_order:
+    description: 完成开箱检测订单
+    method: put
+    route: /api/inspection/order/completed/${inspection_id}
+    RequestData:
+      json:
+        status: 0
+        perfect_num: 1
+        un_perfect_num: 0
+        note: ''
+        file_path: ''
+        old_sn: '1234214'
+        new_sn: null
+        no_draft: ''
+        log_id: ''
+        reason_ids: []
+        sku: RT_C10
+        attachment: null
+        is_completed: 1
+        template_info:
+          19a487cc117abfce085ec6a7c59: Original package-原包装
+          19a487c7e59abfce085ec6a7c56: None accessory-无任何配件,MC4 cable
+          19a487ebc94abfce085ec6a7c61: Slightly scratches-有轻微划痕
+          19a487ebc94abfce085ec6a7c62: 1234333test 备注
+          19a487ebc94abfce085ec6a7c63: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251124/155215_1OIP-C.png,https://d2msipxqnvj5w6.cloudfront.net/test/files/20251124/155226_test.jpg
+    Validate:
+      expectCode: 200
+      resultCheckJsonpath:
+        - $.code: 200
+        - $.data.cn: 常规退货待上架暂存区

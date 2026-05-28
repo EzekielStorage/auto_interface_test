@@ -1,0 +1,865 @@
+# 维修不良品
+config:
+  skip: false
+  baseurl: ${BMS_URL}
+  timeout: 120.0
+  verify_ssl: false
+  headers:
+    Accept: application/json, text/javascript, */*; q=0.01
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: keep-alive
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    cookies: i18n_redirected=en; _ga=GA1.1.2035449644.1756374279; factoryToken=Bearer%20xxxxx
+    X-Requested-With: XMLHttpRequest
+    authorization: ${BMS_TOKEN_ENG}
+variable:
+  none: none
+tests:
+  eng_find_repair_order:
+    description: 通用工程师查询RMA维修单
+    method: GET
+    route: /api/engineer/afterSale/orderList?page=1&type_arr=1%2C2&express_no=${express_no}&limit=10&timestamp=1765878964012
+    Validate:
+      expectCode: 200
+    Extract:
+      - rma_order_id: $.[0].sale_info.rma_order_id
+      - order_id: $.[0].id
+  add_engineer_order:
+    description: 通用工程师领单
+    method: POST
+    route: /api/warehouse/afterSale/addEngineerOrder
+    RequestData:
+      json:
+        order_id: 6223
+        arr:
+          - num: 1
+            engineer_id: 10410
+    Validate:
+      expectCode: 200
+  add_IW:
+    description: 通用工程师判保保内
+    method: PUT
+    route: /api/order/engineerAuditRMAV2/${rma_order_id}
+    RequestData:
+      json:
+        service_type: 1
+        part_list: []
+        remarks: ''
+        img_list: []
+    Validate:
+      expectCode: 200
+  DE_RMA_IW_inspection:
+    description: 德国工厂RMA保内维修检测包含SOP流程
+    method: PUT
+    route: /api/engineer/afterSale/editStepData
+    RequestData:
+      json:
+        order_id: 4585
+        step_code: new_base_info
+        note: null
+        file_path: ''
+        old_sn: BSR251215-0036
+        new_sn: null
+        checked:
+          - fault_id: 285
+            service_type: 1
+            cn_name: 用户电话设置问题（第三方应用程序除外）
+            en_name: User phone settings questions (excluding those for third-party
+              applications)
+          - fault_id: 290
+            service_type: 1
+            cn_name: 按下电源键时无响应
+            en_name: No response when pressing power keys
+        repair_data:
+          19a487ebc94abfce085ec6a7c61: Slightly scratches-有轻微划痕
+          19a487ebc94abfce085ec6a7c62: null
+          19a487ebc94abfce085ec6a7c63: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/181510_1OIP-C.png
+          19a487cc117abfce085ec6a7c59: Non-original packaging-客户自行包装
+          19a487c7e59abfce085ec6a7c56:
+            - None accessory-无任何配件
+          19a487c7e59abfce085ec6a7c57: xxxx
+        field_list:
+          - id: 142
+            template_id: 6
+            type: radio
+            type_name: radio_select
+            parent_type: select
+            title: 外观检查
+            en_title: Appearance inspection
+            field: 19a487ebc94abfce085ec6a7c61
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 67
+                template_id: 6
+                field_id: 142
+                name: 常新
+                en_name: Almost new
+                value: Almost new-常新
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: '2025-10-28 16:40:04'
+                updated_at: '2025-10-28 16:40:07'
+              - id: 69
+                template_id: 6
+                field_id: 142
+                name: 有轻微划痕
+                en_name: Slightly scratches
+                value: Slightly scratches-有轻微划痕
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 70
+                template_id: 6
+                field_id: 142
+                name: 刮花，磨损严重(需拍照)
+                en_name: Severe scratches(photo required)
+                value: Severe scratches(photo required)-刮花，磨损严重(需拍照)
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 71
+                template_id: 6
+                field_id: 142
+                name: 严重破损(需拍照)
+                en_name: Severe Damaged(photos required)
+                value: Severe Damaged(photos required)-严重破损(需拍照)
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 146
+            template_id: 6
+            type: input
+            type_name: single_input
+            parent_type: inputText
+            title: 备注
+            en_title: Remark
+            field: 19a487ebc94abfce085ec6a7c62
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+          - id: 147
+            template_id: 6
+            type: upload
+            type_name: uploadComponent
+            parent_type: upload
+            title: 照片上传
+            en_title: Upload picture
+            field: 19a487ebc94abfce085ec6a7c63
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+          - id: 148
+            template_id: 6
+            type: radio
+            type_name: radio_select
+            parent_type: select
+            title: 包装类型
+            en_title: Package type
+            field: 19a487cc117abfce085ec6a7c59
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 72
+                template_id: 6
+                field_id: 148
+                name: 原包装
+                en_name: Original package
+                value: Original package-原包装
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 73
+                template_id: 6
+                field_id: 148
+                name: 客户自行包装
+                en_name: Non-original packaging
+                value: Non-original packaging-客户自行包装
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 74
+                template_id: 6
+                field_id: 148
+                name: 裸机
+                en_name: Only powerstation
+                value: Only powerstation-裸机
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 75
+                template_id: 6
+                field_id: 148
+                name: 其他(备注说明)
+                en_name: Others(specify by remarks)
+                value: Others(specify by remarks)-其他(备注说明)
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 154
+            template_id: 6
+            type: multiplePicker
+            type_name: multiplePicker
+            parent_type: select
+            title: 包含配件
+            en_title: Included Accessories
+            field: 19a487c7e59abfce085ec6a7c56
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 76
+                template_id: 6
+                field_id: 154
+                name: 标配齐全
+                en_name: Completed accessories
+                value: Completed accessories-标配产全
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 77
+                template_id: 6
+                field_id: 154
+                name: 无任何配件
+                en_name: None accessory
+                value: None accessory-无任何配件
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 78
+                template_id: 6
+                field_id: 154
+                name: MC4 cable
+                en_name: MC4 cable
+                value: MC4 cable
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 79
+                template_id: 6
+                field_id: 154
+                name: 车充线
+                en_name: Car charging cable
+                value: Car charging cable-车充线
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 80
+                template_id: 6
+                field_id: 154
+                name: 标配XT90航空线
+                en_name: XT90-Aviation cable
+                value: XT90-Aviation cable-标配XT90航空线
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 81
+                template_id: 6
+                field_id: 154
+                name: 并机线
+                en_name: Expansion cable
+                value: Expansion cable-并机线
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 82
+                template_id: 6
+                field_id: 154
+                name: 适配器
+                en_name: Adapter
+                value: Adapter-适配器
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 83
+                template_id: 6
+                field_id: 154
+                name: AC电源线
+                en_name: AC charging cable
+                value: AC charging cable-AC电源线
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 162
+            template_id: 6
+            type: input
+            type_name: single_input
+            parent_type: inputText
+            title: 其它配件
+            en_title: 0ther accessories
+            field: 19a487c7e59abfce085ec6a7c57
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+    Validate:
+      expectCode: 200
+  DE_RMA_IW_repair:
+    description: 德国工厂RMA保内维修维修包含SOP流程
+    method: PUT
+    route: /api/engineer/afterSale/editStepData
+    RequestData:
+      json:
+        order_id: 4585
+        step_code: new_repair
+        note: ''
+        file_path: ''
+        data: []
+        type: 3
+        checked: []
+        fault_list:
+          - id: 7024
+            order_id: 4585
+            fault_id: 285
+            engineer_id: 10410
+            engineer_name: nine_eng
+            repair_method_checked: []
+            note: null
+            file_path: null
+            created_at: '2025-12-16 16:19:28'
+            updated_at: '2025-12-16 16:19:28'
+            part_list:
+              - service_type: 1
+                materiel_sku: MR_A-PB-EB70-U2-V4-0168
+                type: 2
+                num: 1
+                order_id: 4585
+                old_sn: '6133463'
+                new_sn: '66561'
+                error_desc: terstxxxx
+                fault_tag: []
+                file_path: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/182055_test.jpg
+                old_sn_list:
+                  - '6133463'
+                new_sn_list:
+                  - '66561'
+                fault_id: '285'
+                product_info:
+                  en_sku_name: PCBA(PB) Mian PCBA
+                  sku_name: PCBA(PB) 主板
+                oldSn: ''
+                newSn: ''
+                pathArr:
+                  - type: image
+                    url: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/182055_test.jpg
+                    poster: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/182055_test.jpg
+            fault_info:
+              id: 285
+              code: MPFA00285
+              cn_name: 用户电话设置问题（第三方应用程序除外）
+              en_name: User phone settings questions (excluding those for third-party
+                applications)
+              short_desc: ''
+              created_at: '2025-03-10 15:58:51'
+              updated_at: '2025-03-10 15:58:51'
+              category_id: 10
+              de_name: Fragen zu Telefoneinstellungen für Benutzer (ausgenommen Fragen
+                für Anwendungen von Drittanbietern)
+            pathArr: []
+          - id: 7025
+            order_id: 4585
+            fault_id: 290
+            engineer_id: 10410
+            engineer_name: nine_eng
+            repair_method_checked: []
+            note: 12341234test
+            file_path: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/182138_2025.jpg
+            created_at: '2025-12-16 16:19:51'
+            updated_at: '2025-12-16 16:19:51'
+            part_list: []
+            fault_info:
+              id: 290
+              code: MPFA00290
+              cn_name: 按下电源键时无响应
+              en_name: No response when pressing power keys
+              short_desc: ''
+              created_at: '2025-03-10 15:58:51'
+              updated_at: '2025-03-10 15:58:51'
+              category_id: 10
+              de_name: Keine Reaktion beim Drücken der Power-Tasten
+            pathArr:
+              - type: image
+                url: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/182138_2025.jpg
+                poster: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251216/182138_2025.jpg
+        field_list:
+          - id: 183
+            template_id: 8
+            type: multiplePicker
+            type_name: multiplePicker
+            parent_type: select
+            title: Fault category-故障类别(大类)
+            en_title: Fault category
+            field: 19a529da4d6abfce023f046a78e
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 119
+                template_id: 8
+                field_id: 183
+                name: 检测正常
+                en_name: Testing normal
+                value: Testing normal-检测正常
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 120
+                template_id: 8
+                field_id: 183
+                name: 开关机故障
+                en_name: Power on/off fault
+                value: Power on/off fault-开关机故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 121
+                template_id: 8
+                field_id: 183
+                name: 显示故障
+                en_name: Display fault
+                value: Display fault-显示故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 122
+                template_id: 8
+                field_id: 183
+                name: AC故障
+                en_name: AC fault
+                value: AC fault-AC故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 123
+                template_id: 8
+                field_id: 183
+                name: DC故障
+                en_name: DC fault
+                value: DC fault-DC故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 124
+                template_id: 8
+                field_id: 183
+                name: 接囗故障
+                en_name: Input&output fault
+                value: Input&output fault-接囗故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 125
+                template_id: 8
+                field_id: 183
+                name: 电池包故障
+                en_name: Battery pack issue
+                value: Battery pack issue-电池包故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 126
+                template_id: 8
+                field_id: 183
+                name: 其他故障
+                en_name: Others
+                value: Others-其他故障
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 184
+            template_id: 8
+            type: multiplePicker
+            type_name: multiplePicker
+            parent_type: select
+            title: Failure phenomenon-故障现象(小类)
+            en_title: Failure phenomenon
+            field: 19a529da4d6abfce023f046a78f
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 127
+                template_id: 8
+                field_id: 184
+                name: 检测正常
+                en_name: Testing normal
+                value: Testing normal-检测正常
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 128
+                template_id: 8
+                field_id: 184
+                name: 无法开机
+                en_name: Unable turn on
+                value: Unable turn on-无法开机
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 129
+                template_id: 8
+                field_id: 184
+                name: 自动关机
+                en_name: Auto Power-off
+                value: Auto Power-off-自动关机
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 130
+                template_id: 8
+                field_id: 184
+                name: 无法充电
+                en_name: Unable charging
+                value: Unable charging-无法充电
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 131
+                template_id: 8
+                field_id: 184
+                name: 无输出
+                en_name: No output
+                value: No output-无输出
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 132
+                template_id: 8
+                field_id: 184
+                name: 显示不良
+                en_name: Display failure
+                value: Display failure-显示不良
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 133
+                template_id: 8
+                field_id: 184
+                name: 报Overload
+                en_name: Overload
+                value: Overload-报Overload
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 134
+                template_id: 8
+                field_id: 184
+                name: 报TEMP
+                en_name: TEMP
+                value: TEMP-报TEMP
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 135
+                template_id: 8
+                field_id: 184
+                name: 端囗损坏(下陷、熔胶)
+                en_name: Ports damaged(Sink,Melted)
+                value: Ports damaged(Sink,Melted)-端囗损坏(下陷、熔胶)
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 136
+                template_id: 8
+                field_id: 184
+                name: 内部异物异响
+                en_name: Internal noise
+                value: Internal noise-内部异物异响
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 137
+                template_id: 8
+                field_id: 184
+                name: 异味
+                en_name: Odour issues
+                value: Odour issues-异味
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 138
+                template_id: 8
+                field_id: 184
+                name: 噪音
+                en_name: Noise
+                value: Noise-噪音
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 185
+            template_id: 8
+            type: radio
+            type_name: radio_select
+            parent_type: select
+            title: Owner-责任归属
+            en_title: Owner
+            field: 19a529da4d6abfce023f046a790
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 139
+                template_id: 8
+                field_id: 185
+                name: 客户使用损坏
+                en_name: Customer reason
+                value: Customer reason-客户使用损坏
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 140
+                template_id: 8
+                field_id: 185
+                name: 研发设计问题
+                en_name: Design issue
+                value: Design issue-研发设计问题
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 141
+                template_id: 8
+                field_id: 185
+                name: 没有发现问题
+                en_name: No problem found
+                value: No problem found-没有发现问题
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 142
+                template_id: 8
+                field_id: 185
+                name: 生产问题(需拍照)
+                en_name: Production-related issue
+                value: Production-related issue-生产问题(需拍照)
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+          - id: 186
+            template_id: 8
+            type: input
+            type_name: single_input
+            parent_type: inputText
+            title: 维修说明
+            en_title: Maintenance instructions
+            field: 19a529da4d6abfce023f046a791
+            required: false
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list: []
+          - id: 187
+            template_id: 8
+            type: multiplePicker
+            type_name: multiplePicker
+            parent_type: select
+            title: Maintenance-维修动作
+            en_title: Maintenance
+            field: 19a529da4d6abfce023f046a792
+            required: true
+            count: 1
+            placeholder: null
+            step: 0
+            rule: null
+            created_at: null
+            updated_at: null
+            option_list:
+              - id: 143
+                template_id: 8
+                field_id: 187
+                name: 升级
+                en_name: Upgrade firmware
+                value: Upgrade firmware--升级
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 144
+                template_id: 8
+                field_id: 187
+                name: 更换
+                en_name: Replace
+                value: Replace-更换
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 145
+                template_id: 8
+                field_id: 187
+                name: 老化处理
+                en_name: Aging test
+                value: Aging test-老化处理
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 146
+                template_id: 8
+                field_id: 187
+                name: 外接电源补电
+                en_name: Recharge battery with external powersupply
+                value: Recharge battery with external powersupply-外接电源补电
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+              - id: 147
+                template_id: 8
+                field_id: 187
+                name: 适配器激活
+                en_name: Adapter charging
+                value: Adapter charging-适配器激活
+                num: 0
+                checked: false
+                relation_list: null
+                created_at: null
+                updated_at: null
+        repair_data:
+          19a529da4d6abfce023f046a78e:
+            - Input&output fault-接囗故障
+          19a529da4d6abfce023f046a78f:
+            - Unable turn on-无法开机
+          19a529da4d6abfce023f046a790: Production-related issue-生产问题(需拍照)
+          19a529da4d6abfce023f046a791: ''
+          19a529da4d6abfce023f046a792:
+            - Replace-更换
+        is_inventory: true
+    Validate:
+      expectCode: 200
+  DE_RMA_IW_repair_submit:
+    description: 提交维修结果-良品
+    method: PUT
+    route: /api/engineer/afterSale/orderSubmit
+    RequestData:
+      json:
+        order_id: ${order_id}
+    Validate:
+      expectCode: 200

@@ -1,0 +1,132 @@
+config:
+  skip: false
+  baseurl: ${BMS_URL}
+  timeout: 30.0
+  verify_ssl: false
+  headers:
+    Accept: application/json, text/javascript, */*; q=0.01
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: keep-alive
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    authorization: ${BMS_TOKEN}
+variable: {}
+tests:
+  get_engineer_info:
+    description: 通用获取工程师信息
+    method: GET
+    route: /api/users/userInfo?timestamp=1766562581596
+    Validate:
+      expectCode: 200
+    Extract:
+      - 'engnieer_id: $.data.id'
+  eng_find_repair_order:
+    description: 通用工程师查询订单
+    method: GET
+    route: /api/engineer/afterSale/orderList?page=1&type_arr=1%2C2&express_no=${express_no}&limit=10&timestamp=1765878964012
+    Validate:
+      expectCode: 200
+    Extract:
+      - 'order_id: $.[0].id'
+  add_engineer_order:
+    description: 通用工程师领单
+    method: POST
+    route: /api/warehouse/afterSale/addEngineerOrder
+    RequestData:
+      json:
+        order_id: ${order_id}
+        arr:
+          - num: 1
+            engineer_id: ${engnieer_id}
+    Validate:
+      expectCode: 200
+  get_fault_list:
+    description: 通用获取故障信息
+    method: GET
+    route: /api/engineer/afterSale/getRepairStep?order_id=${order_id}&timestamp=1766561802625
+    Validate:
+      expectCode: 200
+    ResultData: fault_list
+  add_repair_check:
+    description: 通用选择故障信息填写检测描述和附件
+    method: PUT
+    route: /api/engineer/afterSale/editStepData
+    RequestData:
+      json:
+        order_id: ${order_id}
+        step_code: new_base_info
+        note: Repair check description
+        file_path: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251224/154228_test
+          video.mp4,https://d2msipxqnvj5w6.cloudfront.net/test/files/20251224/154237_1OIP-C.png,https://d2msipxqnvj5w6.cloudfront.net/test/files/20251224/154324_loopy.jpg
+        old_sn: gcei5Cl4Zj
+        new_sn: null
+        checked:
+          - fault_id: 224
+            service_type: 1
+            cn_name: 电池损坏进水
+            en_name: Battery water damage
+    Validate:
+      expectCode: 200
+  get_fault_message_material:
+    description: 通用获取故障信息对应的故障部位-不良品
+    method: GET
+    route: /api/engineer/afterSale/getRepairFaultMateriel?fault_id=224&order_id=${order_id}&timestamp=1766562881408
+    Validate:
+      expectCode: 200
+    ResultData: fault_material
+  add_repair_process:
+    description: 添加具体维修信息
+    method: PUT
+    route: /api/engineer/afterSale/editStepData
+    RequestData:
+      json:
+        order_id: ${order_id}
+        step_code: new_repair
+        note: ''
+        file_path: ''
+        data: []
+        type: 4
+        checked:
+          - 13
+        fault_list:
+          - id: 7230
+            order_id: ${order_id}
+            fault_id: 224
+            engineer_id: ${engnieer_id}
+            engineer_name: chris_eng
+            repair_method_checked: []
+            note: test rejects
+            file_path: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251225/115326_ModelYMaterial.png,https://d2msipxqnvj5w6.cloudfront.net/test/files/20251225/115333_test
+              video.mp4
+            created_at: '2025-12-25 03:52:04'
+            updated_at: '2025-12-25 03:52:04'
+            part_list: []
+            fault_info:
+              id: 224
+              code: MPFA00224
+              cn_name: 电池损坏进水
+              en_name: Battery water damage
+              short_desc: ''
+              created_at: '2023-12-26 13:23:07'
+              updated_at: '2024-09-19 16:18:32'
+              category_id: 9
+              de_name: null
+            pathArr:
+              - type: image
+                url: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251225/115326_ModelYMaterial.png
+                poster: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251225/115326_ModelYMaterial.png
+              - type: video
+                url: https://d2msipxqnvj5w6.cloudfront.net/test/files/20251225/115333_test
+                  video.mp4
+                poster: ''
+        is_inventory: true
+    Validate:
+      expectCode: 200
+  submit_repair_order:
+    description: 通用提交维修订单
+    method: PUT
+    route: /api/engineer/afterSale/orderSubmit
+    RequestData:
+      json:
+        order_id: ${order_id}

@@ -1,0 +1,45 @@
+# 新建普通维修订单并入库
+sequence1:
+  test_inbound: null
+  global_order_no: BSR260507-0019
+#  test_inbound: null
+
+# 仓管入库
+#sequence2:
+#  test_inbound: null
+#  global_order_no: BSR260318-0002
+
+
+# 工程师维修良品(保内，带SOP)
+#sequence3:
+#  test_inbound:  null
+#  test_de_rma_IW_good:  null
+#  global_order_no: BSR251215-0042
+# 工程师维修不良品（保内，带SOP）
+#sequence4:
+
+# 批量流程测试
+#sequence5:
+#  test_normal_repair_inbound: null
+#  test_inbound:  null
+#sequence7:
+#  test_create_fault_detect_order: null
+###  global_order_no: BSR251218-0024
+#  test_inbound:  null
+##  express_no: 794967289133
+#  test_fault_detect_repairable: null
+
+#sequence6:
+#  test_normal_repair_inbound: null
+#  test_inbound:  null
+#  test_normal_repair_rejects: null
+
+# 批量流程测试,不能做成动态选择 的效果
+#sequence8:
+#  global_order_no: BSR251226-0003
+#  test_inbound:  null
+
+#sequence9:
+#  express_no: 794969958489
+#  order_id: 4693
+#  test_normal_repair_rejects_auto: null

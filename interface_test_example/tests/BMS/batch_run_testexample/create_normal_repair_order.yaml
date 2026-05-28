@@ -1,0 +1,3 @@
+# 创建维修入库订单
+sequence1:
+  test_normal_repair_inbound: null

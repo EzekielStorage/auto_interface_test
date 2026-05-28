@@ -1,0 +1,4 @@
+path: C:\Users\Administrator\Desktop\250526\code\interface_test_example\tests\BMS\batch_run_testexample
+example:
+  create_normal_repair_order: 2
+  inbound_process: 1
